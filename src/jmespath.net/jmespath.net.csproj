@@ -28,8 +28,11 @@
   </ItemGroup>
 
   <Target Name="PrecompileScript" BeforeTargets="BeforeBuild" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
-    <Exec Command="dotnet make $(MSBuildProjectDirectory)../../../bin/dotnet-gplex.dll /unicode /out:$(MSBuildProjectDirectory)/JmesPathScanner.cs $(MSBuildProjectDirectory)/JmesPathScanner.lex" />
-    <Exec Command="dotnet make $(MSBuildProjectDirectory)../../../bin/dotnet-gppg.dll /gplex /out:$(MSBuildProjectDirectory)/JmesPathParser.cs $(MSBuildProjectDirectory)/JmesPathParser.y" />
+    <PropertyGroup>
+      <GppgDirectory>$(MSBuildProjectDirectory)../../../bin/</GppgDirectory>
+    </PropertyGroup>
+    <Exec Condition=" Exists('$(GppgDirectory)dotnet-gplex.dll') " Command="dotnet make &quot;$(GppgDirectory)dotnet-gplex.dll&quot; /unicode &quot;/out:$(MSBuildProjectDirectory)/JmesPathScanner.cs&quot; &quot;$(MSBuildProjectDirectory)/JmesPathScanner.lex&quot;" />
+    <Exec Condition=" Exists('$(GppgDirectory)dotnet-gppg.dll') " Command="dotnet make &quot;$(GppgDirectory)dotnet-gppg.dll&quot; /gplex &quot;/out:$(MSBuildProjectDirectory)/JmesPathParser.cs&quot; &quot;$(MSBuildProjectDirectory)/JmesPathParser.y&quot;" />
   </Target>
 
   <ItemGroup>
