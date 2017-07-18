@@ -18,5 +18,8 @@ namespace DevLab.JmesPath.Expressions
             var jsonObject = json as JObject;
             return jsonObject?[name_];
         }
+
+        public override JmesPathExpression Accept(Interop.ITransformVisitor visitor)
+            => visitor.Visit(this);
     }
 }

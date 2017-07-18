@@ -9,5 +9,8 @@ namespace DevLab.JmesPath.Expressions
         {
             return json;
         }
+
+        public override JmesPathExpression Accept(Interop.ITransformVisitor visitor)
+            => visitor.Visit(this);
     }
 }

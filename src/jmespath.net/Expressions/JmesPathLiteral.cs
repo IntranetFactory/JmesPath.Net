@@ -19,5 +19,8 @@ namespace DevLab.JmesPath.Expressions
         {
             return value_;
         }
+
+        public override JmesPathExpression Accept(Interop.ITransformVisitor visitor)
+            => visitor.Visit(this);
     }
 }

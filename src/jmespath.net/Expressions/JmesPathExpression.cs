@@ -59,5 +59,11 @@ namespace DevLab.JmesPath.Expressions
         {
             visitor.Visit(this);
         }
+
+        /// <summary>
+        /// Perform a traversal and possible update of the abstract syntax tree.
+        /// </summary>
+        public virtual JmesPathExpression Accept(ITransformVisitor visitor)
+            => visitor.Visit(this);
     }
 }

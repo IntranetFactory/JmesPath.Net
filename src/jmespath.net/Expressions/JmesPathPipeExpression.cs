@@ -30,5 +30,8 @@ namespace DevLab.JmesPath.Expressions
 
             return Right.Transform(token);
         }
+
+        protected override JmesPathExpression CreateWith(JmesPathExpression left, JmesPathExpression right)
+            => new JmesPathPipeExpression(left, right);
     }
 }

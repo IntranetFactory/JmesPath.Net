@@ -40,5 +40,13 @@ namespace DevLab.JmesPath.Expressions
             base.Accept(visitor);
             expression_.Accept(visitor);
         }
+
+        public override JmesPathExpression Accept(ITransformVisitor visitor)
+        {
+            var visitedExpression = expression_.Accept(visitor);
+            return visitedExpression == expression_
+                ? this
+                : new JmesPathFilterProjection(visitedExpression);
+        }
     }
 }

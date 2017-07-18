@@ -15,6 +15,14 @@ namespace DevLab.JmesPath.Expressions
         {
             return expression_.Transform(json);
         }
+
+        public override JmesPathExpression Accept(Interop.ITransformVisitor visitor)
+        {
+            var visitedExpression = expression_.Accept(visitor);
+            return visitor.Visit(visitedExpression == expression_
+                ? this
+                : new JmesParenExpression(visitedExpression));
+        }
     }
 
     public class JmesPathOrExpression : JmesPathCompoundExpression
@@ -35,5 +43,8 @@ namespace DevLab.JmesPath.Expressions
             var token = Left.Transform(json);
             return !JmesPathArgument.IsFalse(token) ? token : Right.Transform(json);
         }
+
+        protected override JmesPathExpression CreateWith(JmesPathExpression left, JmesPathExpression right)
+            => new JmesPathOrExpression(left, right);
     }
 }

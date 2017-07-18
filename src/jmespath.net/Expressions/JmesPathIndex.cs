@@ -4,7 +4,7 @@ namespace DevLab.JmesPath.Expressions
 {
     public class JmesPathIndex : JmesPathExpression
     {
-        private readonly int index_;
+        public int Value { get; }
 
         /// <summary>
         /// Initialize a new instance of the <see cref="JmesPathIndex"/>
@@ -13,7 +13,7 @@ namespace DevLab.JmesPath.Expressions
         /// <param name="index"></param>
         public JmesPathIndex(int index)
         {
-            index_ = index;
+            Value = index;
         }
 
         protected override JmesPathArgument Transform(JToken json)
@@ -25,7 +25,7 @@ namespace DevLab.JmesPath.Expressions
             if (array == null)
                 return null;
 
-            var index = index_;
+            var index = Value;
 
             if (index < 0)
                 index = array.Count + index;
@@ -34,5 +34,8 @@ namespace DevLab.JmesPath.Expressions
 
             return array[index];
         }
+
+        public override JmesPathExpression Accept(Interop.ITransformVisitor visitor)
+            => visitor.Visit(this);
     }
 }

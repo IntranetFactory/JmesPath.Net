@@ -26,5 +26,8 @@ namespace DevLab.JmesPath.Expressions
                 false
                 );
         }
+
+        protected override JmesPathExpression CreateWith(JmesPathExpression left, JmesPathExpression right)
+            => new JmesPathSubExpression(left, right);
     }
 }

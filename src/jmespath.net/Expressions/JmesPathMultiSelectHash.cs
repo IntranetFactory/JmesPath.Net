@@ -36,5 +36,22 @@ namespace DevLab.JmesPath.Expressions
             foreach (var key in dictionary_.Keys)
                 dictionary_[key].Accept(visitor);
         }
+
+        public override JmesPathExpression Accept(ITransformVisitor visitor)
+        {
+            var anyChanged = false;
+            var visited = new Dictionary<string, JmesPathExpression>();
+
+            foreach (var item in dictionary_)
+            {
+                var visitedItem = item.Value.Accept(visitor);
+                visited[item.Key] = visitedItem;
+                anyChanged |= visitedItem != item.Value;
+            }
+
+            return visitor.Visit(anyChanged
+                ? new JmesPathMultiSelectHash(visited)
+                : this);
+        }
     }
 }

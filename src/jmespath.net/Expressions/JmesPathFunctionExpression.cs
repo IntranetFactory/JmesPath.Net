@@ -13,6 +13,16 @@ namespace DevLab.JmesPath.Expressions
         private readonly JmesPathExpression[] expressions_;
         private readonly JmesPathFunction function_;
 
+        public IReadOnlyList<JmesPathExpression> Arguments => expressions_;
+        public JmesPathFunction Function => function_;
+
+        private JmesPathFunctionExpression(string name, JmesPathExpression[] expressions, JmesPathFunction function)
+        {
+            name_ = name;
+            expressions_ = expressions;
+            function_ = function;
+        }
+
         public JmesPathFunctionExpression(string name, params JmesPathExpression[] expressions)
             : this(JmesPathFunctionFactory.Default, name, expressions)
         {
@@ -68,6 +78,37 @@ namespace DevLab.JmesPath.Expressions
             function_.Validate(arguments);
 
             return function_.Execute(arguments);
+        }
+
+        public override JmesPathExpression Accept(ITransformVisitor visitor)
+        {
+            JmesPathExpression[] visitedExpressionsStorage = expressions_;
+            JmesPathExpression[] visitedExpressions = null;
+
+            for (int i = 0, n = expressions_.Length; i < n; i++)
+            {
+                var expression = expressions_[i];
+                var visitedExpression = expression.Accept(visitor);
+
+                // the first time we visited a transformed argument, allocate new
+                // argument storage and copy any preceding untransformed arguments
+                if (expression != visitedExpression && visitedExpressions == null)
+                {
+                    visitedExpressions = new JmesPathExpression[n];
+                    visitedExpressionsStorage = visitedExpressions;
+                    if (i > 0)
+                        Array.Copy(expressions_, visitedExpressions, i - 1);
+                }
+
+                visitedExpressionsStorage[i] = visitedExpression;
+            }
+
+            // if our visited argument storage array and the one backing this
+            // instance are the same, then no arguments were transformed
+            if (visitedExpressionsStorage == expressions_)
+                return visitor.Visit(this);
+
+            return visitor.Visit(new JmesPathFunctionExpression(name_, visitedExpressionsStorage, function_));
         }
     }
 }

@@ -7,19 +7,21 @@ namespace DevLab.JmesPath.Expressions
 {
     public sealed class JmesPathMultiSelectList : JmesPathExpression
     {
-        private readonly IList<JmesPathExpression> expressions_
-            = new List<JmesPathExpression>()
-            ;
+        private readonly IList<JmesPathExpression> expressions_;
+
+        JmesPathMultiSelectList(List<JmesPathExpression> expressions)
+        {
+            expressions_ = expressions;
+        }
 
         public JmesPathMultiSelectList(params JmesPathExpression[] expressions)
-            : this((IEnumerable<JmesPathExpression>)expressions)
+            : this(new List<JmesPathExpression>(expressions))
         {
         }
 
         public JmesPathMultiSelectList(IEnumerable<JmesPathExpression> expressions)
+            : this(new List<JmesPathExpression>(expressions))
         {
-            foreach (var expression in expressions)
-                expressions_.Add(expression);
         }
 
         protected override JmesPathArgument Transform(JToken json)
@@ -39,6 +41,23 @@ namespace DevLab.JmesPath.Expressions
             base.Accept(visitor);            
             foreach (var expression in expressions_)
                 expression.Accept(visitor);
+        }
+
+        public override JmesPathExpression Accept(ITransformVisitor visitor)
+        {
+            var anyChanged = false;
+            var visited = new List<JmesPathExpression>();
+
+            foreach (var expression in expressions_)
+            {
+                var visitedExpression = expression.Accept(visitor);
+                visited.Add(visitedExpression);
+                anyChanged |= visitedExpression != expression;
+            }
+
+            return visitor.Visit(anyChanged
+                ? new JmesPathMultiSelectList(visited)
+                : this);
         }
     }
 }

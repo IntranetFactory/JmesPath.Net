@@ -38,11 +38,11 @@ namespace DevLab.JmesPath
 
         public sealed class Expression : JmesPathExpression
         {
-            private readonly JmesPathExpression expression_;
+            public JmesPathExpression InnerExpression { get; }
 
             internal Expression(JmesPathExpression expression)
             {
-                expression_ = expression;
+                InnerExpression = expression;
             }
 
             public string Transform(string document)
@@ -54,7 +54,21 @@ namespace DevLab.JmesPath
 
             protected override JmesPathArgument Transform(JToken json)
             {
-                return expression_.Transform(json);
+                return InnerExpression.Transform(json);
+            }
+
+            public override void Accept(IVisitor visitor)
+            {
+                base.Accept(visitor);
+                InnerExpression.Accept(visitor);
+            }
+
+            public override JmesPathExpression Accept(ITransformVisitor visitor)
+            {
+                var visitedExpression = InnerExpression.Accept(visitor);
+                return visitor.Visit(visitedExpression == InnerExpression
+                    ? this
+                    : new Expression(visitedExpression));
             }
         }
 

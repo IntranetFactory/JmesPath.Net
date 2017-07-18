@@ -19,5 +19,8 @@ namespace DevLab.JmesPath.Expressions
         {
             return JToken.DeepEquals(left, right);
         }
+
+        protected override JmesPathExpression CreateWith(JmesPathExpression left, JmesPathExpression right)
+            => new JmesPathEqualOperator(left, right);
     }
 }

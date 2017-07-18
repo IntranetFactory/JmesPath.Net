@@ -17,5 +17,8 @@ namespace DevLab.JmesPath.Expressions
         {
             return left >= right;
         }
+
+        protected override JmesPathExpression CreateWith(JmesPathExpression left, JmesPathExpression right)
+            => new JmesPathGreaterThanOrEqualOperator(left, right);
     }
 }

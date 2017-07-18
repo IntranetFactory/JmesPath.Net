@@ -37,5 +37,8 @@ namespace DevLab.JmesPath.Expressions
                 : base.Transform(argument)
                 ;
         }
+
+        public override JmesPathExpression Accept(Interop.ITransformVisitor visitor)
+            => visitor.Visit(this);
     }
 }
