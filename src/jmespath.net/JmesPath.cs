@@ -74,15 +74,44 @@ namespace DevLab.JmesPath
 
         public Expression Parse(string expression)
         {
-            return Parse(new MemoryStream(Encoding.UTF8.GetBytes(expression)));
+            if (expression == null)
+                throw new ArgumentNullException(nameof(expression));
+
+            return Parse(expression, repository_);
         }
 
         public Expression Parse(Stream stream)
         {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(Expression));
+
+            return Parse(stream, repository_);
+        }
+
+        public static Expression Parse(string expression, IFunctionRepository functionRepository)
+        {
+            if (expression == null)
+                throw new ArgumentNullException(nameof(expression));
+
+            if (functionRepository == null)
+                throw new ArgumentNullException(nameof(functionRepository));
+
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(expression)))
+                return Parse(stream, functionRepository);
+        }
+
+        public static Expression Parse(Stream stream, IFunctionRepository functionRepository)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
+            if (functionRepository == null)
+                throw new ArgumentNullException(nameof(functionRepository));
+
             var scanner = new JmesPathScanner(stream);
             scanner.InitializeLookaheadQueue();
 
-            var analyzer = new JmesPathParser(scanner, repository_);
+            var analyzer = new JmesPathParser(scanner, functionRepository);
             if (!analyzer.Parse())
             {
                 System.Diagnostics.Debug.Assert(false);
