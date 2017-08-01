@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/jdevillard/JmesPath.Net</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/jdevillard/JmesPath.Net/blob/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
